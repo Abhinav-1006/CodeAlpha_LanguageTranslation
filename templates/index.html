@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Translation Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="container">
+        <div class="eyebrow">CODEALPHA • AI INTERNSHIP PROJECT</div>
+        <h1>Language Translation Tool</h1>
+        <p class="subtitle">Translate text between languages in a few seconds.</p>
+
+        <form method="POST" class="panel">
+            <label for="text">Text to translate</label>
+            <textarea id="text" name="text" maxlength="450" placeholder="Type something here..." required>{{ original }}</textarea>
+
+            <div class="language-row">
+                <div>
+                    <label for="source">From</label>
+                    <select id="source" name="source">
+                        {% for code, name in languages.items() %}
+                        <option value="{{ code }}" {% if source == code %}selected{% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="target">To</label>
+                    <select id="target" name="target">
+                        {% for code, name in languages.items() %}
+                        <option value="{{ code }}" {% if target == code %}selected{% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit">Translate text →</button>
+        </form>
+
+        {% if error %}
+        <div class="message error">{{ error }}</div>
+        {% endif %}
+
+        {% if translated %}
+        <section class="result panel">
+            <div class="result-heading">
+                <h2>Translation</h2>
+                <button type="button" class="copy-button" onclick="copyTranslation()">Copy</button>
+            </div>
+            <p id="translation">{{ translated }}</p>
+            <span class="language-label">{{ languages[source] }} → {{ languages[target] }}</span>
+        </section>
+        {% endif %}
+
+        <footer>Built with Python, Flask and a translation API.</footer>
+    </main>
+    <script>
+        function copyTranslation() {
+            const text = document.getElementById("translation").innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const button = document.querySelector(".copy-button");
+                button.innerText = "Copied!";
+                setTimeout(() => button.innerText = "Copy", 1200);
+            }).catch(() => alert("Copy failed. Please select and copy the text manually."));
+        }
+    </script>
+</body>
+</html>
